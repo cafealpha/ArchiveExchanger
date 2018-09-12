@@ -138,7 +138,6 @@ namespace archiveExchanger
             else if (destExt == "7z")
                 szc.ArchiveFormat = OutArchiveFormat.SevenZip;
 
-            //딕셔너리 파일에서 전체를 압축하므로 의미가 없다.
 
             ////파일이 존재하면 압축 시작중이라는 이야기이므로 compress모드를 바꿈.
             //if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
