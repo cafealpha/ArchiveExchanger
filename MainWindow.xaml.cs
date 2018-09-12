@@ -265,6 +265,14 @@ namespace archiveExchanger
             }
         }
 
+        private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            
+        }
 
+        private void btnConvertStart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
