@@ -1,0 +1,17 @@
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\bin\Debug\archiveExchanger.exe.config
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\bin\Debug\archiveExchanger.exe
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\bin\Debug\archiveExchanger.pdb
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.csprojAssemblyReference.cache
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\MainWindow.g.cs
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\App.g.cs
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger_MarkupCompile.cache
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger_MarkupCompile.lref
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\MainWindow.baml
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.g.resources
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.Properties.Resources.resources
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.csproj.GenerateResource.cache
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.csproj.CoreCompileInputs.cache
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.exe
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.pdb
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\bin\Debug\SevenZipSharp.dll
+d:\develop\Visual Studio 2017\Projects\archiveExchanger\archiveExchanger\obj\Debug\archiveExchanger.csproj.CopyComplete
