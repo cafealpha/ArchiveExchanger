@@ -27,7 +27,7 @@ namespace archiveExchanger
 
 
         //압축파일 총 파일 개수
-        private int totolFileCount;
+        private int totalFileCount;
         //카운터
         private int counter;
 
@@ -64,9 +64,9 @@ namespace archiveExchanger
             SevenZipExtractor.SetLibraryPath(Directory.GetCurrentDirectory() + @"\7z.dll");
 
             fi = new FileInfo(name);
+            
             destExt = ext;
 
-            totolFileCount = 0;
             counter = 0;
 
             _destFormat.Add("ZIP");
@@ -81,11 +81,16 @@ namespace archiveExchanger
             sze.ExtractionFinished += extractCount;
             szc.Compressing += compressEvent;
 
+            totalFileCount = (from file in sze.ArchiveFileData
+                              where !file.IsDirectory
+                              select file).Count();
+
+
         }
 
         private void compressEvent(object sender, ProgressEventArgs e)
         {
-
+            sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
         }
 
         private void extractCount(object sender, EventArgs e)
