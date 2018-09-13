@@ -72,6 +72,24 @@ namespace archiveExchanger
             _destFormat.Add("ZIP");
             _destFormat.Add("7z");
             OnPropertyChanged("destFileName");
+
+            //객체 생성
+            sze = new SevenZipExtractor(fi.FullName);
+            szc = new SevenZipCompressor();
+
+            //이벤트 연결
+            sze.ExtractionFinished += extractCount;
+            szc.Compressing += compressEvent;
+
+        }
+
+        private void compressEvent(object sender, ProgressEventArgs e)
+        {
+
+        }
+
+        private void extractCount(object sender, EventArgs e)
+        {
         }
 
         public string fullPath
@@ -117,12 +135,8 @@ namespace archiveExchanger
         //압축풀기
         public void extractFiles()
         {
-            sze = new SevenZipExtractor(fi.FullName);
-
-            foreach (var file in sze.ArchiveFileData)
+            foreach (var file in sze.ArchiveFileData.Where(file => !file.IsDirectory))
             {
-                if (file.IsDirectory)
-                    continue;
                 MemoryStream st = new MemoryStream();
                 sze.ExtractFile(file.FileName, st);
                 stDic.Add(file.FileName, st);
@@ -131,7 +145,6 @@ namespace archiveExchanger
         //압축하기
         public void compressFiles()
         {
-            szc = new SevenZipCompressor();
             //출력할 포멧
             if (destExt == "ZIP")
                 szc.ArchiveFormat = OutArchiveFormat.Zip;
