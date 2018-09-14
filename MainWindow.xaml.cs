@@ -272,12 +272,15 @@ namespace archiveExchanger
 
         private void btnConvertStart_Click(object sender, RoutedEventArgs e)
         {
-            Items[0].convertStart();
+            //Thread t1 = new Thread(() => Items[0].convertStart());
+            //t1.Start();
 
-
+            ThreadPool.QueueUserWorkItem(startConvert, Items[0]);
         }
-        private void startConvert()
+        private void startConvert(object obj)
         {
+            fileListData item = obj as fileListData;
+            item.convertStart();
         }
 
     }

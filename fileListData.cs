@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
-using SevenZip;
 
 namespace archiveExchanger
 {
@@ -17,15 +16,6 @@ namespace archiveExchanger
         //파일 정보 클래스
         public FileInfo fi;
         
-        //압축 해제 기능
-        SevenZipExtractor sze;
-        //압축기능
-        SevenZipCompressor szc;
-
-        //압축 해체 스트림 딕셔너리
-        public Dictionary<string, Stream> stDic = new Dictionary<string, Stream>();
-
-
         //압축파일 총 파일 개수
         private int totalFileCount;
         //카운터
@@ -77,7 +67,6 @@ namespace archiveExchanger
 
         public fileListData(string name, string ext)
         {
-            SevenZipExtractor.SetLibraryPath(Directory.GetCurrentDirectory() + @"\7z.dll");
 
             fi = new FileInfo(name);
             
@@ -90,27 +79,25 @@ namespace archiveExchanger
             OnPropertyChanged("destFileName");
 
             //객체 생성
-            sze = new SevenZipExtractor(fi.FullName);
-            szc = new SevenZipCompressor();
 
             //압축파일내 파일개수 카운팅
-            totalFileCount = sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
+            //totalFileCount = sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
 
             //이벤트 연결
-            sze.ExtractionFinished += extractCount;
-            szc.Compressing += compressEvent;
+            //sze.ExtractionFinished += extractCount;
+            //szc.Compressing += compressEvent;
         }
 
-        private void compressEvent(object sender, ProgressEventArgs e)
-        {
-            compressProgress = e.PercentDone;
-        }
+        //private void compressEvent(object sender, ProgressEventArgs e)
+        //{
+        //    compressProgress = e.PercentDone;
+        //}
 
-        private void extractCount(object sender, EventArgs e)
-        {
-            extractCounter++;
-            OnPropertyChanged("progress");
-        }
+        //private void extractCount(object sender, EventArgs e)
+        //{
+        //    extractCounter++;
+        //    OnPropertyChanged("progress");
+        //}
 
         public string fullPath
         {
@@ -152,51 +139,51 @@ namespace archiveExchanger
             }
         }
 
-        //압축풀기
-        public void extractFiles()
-        {
-            foreach (var file in sze.ArchiveFileData.Where(file => !file.IsDirectory))
-            {
-                MemoryStream st = new MemoryStream();
-                sze.ExtractFile(file.FileName, st);
-                st.Position = 0;
-                stDic.Add(file.FileName, st);
-            }
-        }
-        //압축하기
-        public void compressFiles()
-        {
-            //출력할 포멧
-            if (destExt == "ZIP")
-                szc.ArchiveFormat = OutArchiveFormat.Zip;
-            else if (destExt == "7z")
-                szc.ArchiveFormat = OutArchiveFormat.SevenZip;
+        ////압축풀기
+        //public void extractFiles()
+        //{
+        //    foreach (var file in sze.ArchiveFileData.Where(file => !file.IsDirectory))
+        //    {
+        //        MemoryStream st = new MemoryStream();
+        //        sze.ExtractFile(file.FileName, st);
+        //        st.Position = 0;
+        //        stDic.Add(file.FileName, st);
+        //    }
+        //}
+        ////압축하기
+        //public void compressFiles()
+        //{
+        //    //출력할 포멧
+        //    if (destExt == "ZIP")
+        //        szc.ArchiveFormat = OutArchiveFormat.Zip;
+        //    else if (destExt == "7z")
+        //        szc.ArchiveFormat = OutArchiveFormat.SevenZip;
 
-            //딕셔너리 파일에서 전체를 압축하므로 의미가 없다.
+        //    //딕셔너리 파일에서 전체를 압축하므로 의미가 없다.
 
-            ////파일이 존재하면 압축 시작중이라는 이야기이므로 compress모드를 바꿈.
-            //if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
-            //    szc.CompressionMode = CompressionMode.Append;
-            //else
-            //    szc.CompressionMode = CompressionMode.Create;
+        //    ////파일이 존재하면 압축 시작중이라는 이야기이므로 compress모드를 바꿈.
+        //    //if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
+        //    //    szc.CompressionMode = CompressionMode.Append;
+        //    //else
+        //    //    szc.CompressionMode = CompressionMode.Create;
 
-            //압축 시작
-            szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
-        }
+        //    //압축 시작
+        //    szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
+        //}
 
-        //전체
-        public void convertStart()
-        {
-            //압축풀기
-            extractFiles();
-            //압축하기 전에 파일이 있으면 삭제
-            if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
-            {
-                File.Delete(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
-            }
-            //압축하기
-            compressFiles();
-        }
+        ////전체
+        //public void convertStart()
+        //{
+        //    //압축풀기
+        //    extractFiles();
+        //    //압축하기 전에 파일이 있으면 삭제
+        //    if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
+        //    {
+        //        File.Delete(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
+        //    }
+        //    //압축하기
+        //    compressFiles();
+        //}
 
         protected virtual void OnPropertyChanged(string name)
         {
