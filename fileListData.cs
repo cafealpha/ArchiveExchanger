@@ -29,7 +29,10 @@ namespace archiveExchanger
         //압축파일 총 파일 개수
         private int totalFileCount;
         //카운터
-        private int counter;
+
+        //압축 해제 카운터
+        private int extractCounter;
+        private int compressProgress;
 
         //작업 완료 플래그
         private bool _workDone;
@@ -59,6 +62,21 @@ namespace archiveExchanger
             }
         }
 
+        private int _progress;
+        public int progress
+        {
+            get
+            {
+                return (int)((extractCounter / (float)totalFileCount * 100) + compressProgress);
+            }
+            set
+            {
+
+            }
+        }
+
+
+
         public fileListData(string name, string ext)
         {
             SevenZipExtractor.SetLibraryPath(Directory.GetCurrentDirectory() + @"\7z.dll");
@@ -67,7 +85,7 @@ namespace archiveExchanger
             
             destExt = ext;
 
-            counter = 0;
+            extractCounter = 0;
 
             _destFormat.Add("ZIP");
             _destFormat.Add("7z");
@@ -77,24 +95,22 @@ namespace archiveExchanger
             sze = new SevenZipExtractor(fi.FullName);
             szc = new SevenZipCompressor();
 
+            //압축파일내 파일개수 카운팅
+            totalFileCount = sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
+
             //이벤트 연결
             sze.ExtractionFinished += extractCount;
             szc.Compressing += compressEvent;
-
-            totalFileCount = (from file in sze.ArchiveFileData
-                              where !file.IsDirectory
-                              select file).Count();
-
-
         }
 
         private void compressEvent(object sender, ProgressEventArgs e)
         {
-            sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
+            compressProgress = e.PercentDone;
         }
 
         private void extractCount(object sender, EventArgs e)
         {
+            extractCounter++;
         }
 
         public string fullPath
@@ -144,6 +160,7 @@ namespace archiveExchanger
             {
                 MemoryStream st = new MemoryStream();
                 sze.ExtractFile(file.FileName, st);
+                st.Position = 0;
                 stDic.Add(file.FileName, st);
             }
         }
@@ -169,7 +186,7 @@ namespace archiveExchanger
         }
 
         //전체
-        public void compressConvert()
+        public void convertStart()
         {
             //압축풀기
             extractFiles();

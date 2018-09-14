@@ -54,8 +54,8 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <ProgressBar Height="20" Width="150" Value="{Binding progress}" ValueChanged="ProgressBar_ValueChanged"  />
-                                    <Label Content ="{Binding progressLabelstr}" HorizontalAlignment="Center" />
+                                    <ProgressBar x:Name="pbAll" Height="20" Width="150" Value="{Binding progress}" ValueChanged="ProgressBar_ValueChanged"  />
+                                    <Label Content ="{Binding Path=Value, ElementName=pbAll}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
