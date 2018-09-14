@@ -273,10 +273,12 @@ namespace archiveExchanger
         private void btnConvertStart_Click(object sender, RoutedEventArgs e)
         {
             Items[0].convertStart();
-            //Thread t1 = new Thread(() => Items[0].convertStart());
-            //t1.Start();
 
-            
+
         }
+        private void startConvert()
+        {
+        }
+
     }
 }

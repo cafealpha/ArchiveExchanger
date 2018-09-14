@@ -62,7 +62,7 @@ namespace archiveExchanger
             }
         }
 
-        private int _progress;
+        //private int _progress;
         public int progress
         {
             get
@@ -74,8 +74,6 @@ namespace archiveExchanger
 
             }
         }
-
-
 
         public fileListData(string name, string ext)
         {
@@ -111,6 +109,7 @@ namespace archiveExchanger
         private void extractCount(object sender, EventArgs e)
         {
             extractCounter++;
+            OnPropertyChanged("progress");
         }
 
         public string fullPath
