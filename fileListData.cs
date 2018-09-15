@@ -58,7 +58,6 @@ namespace archiveExchanger
             get
             {
                 return _progress;        
-                //return (int)((extractCounter / (float)totalFileCount * 100) + compressProgress);
             }
             set
             {
@@ -79,27 +78,7 @@ namespace archiveExchanger
             _destFormat.Add("ZIP");
             _destFormat.Add("7z");
             OnPropertyChanged("destFileName");
-
-            //객체 생성
-
-            //압축파일내 파일개수 카운팅
-            //totalFileCount = sze.ArchiveFileData.Where(file => !file.IsDirectory).Count();
-
-            //이벤트 연결
-            //sze.ExtractionFinished += extractCount;
-            //szc.Compressing += compressEvent;
         }
-
-        //private void compressEvent(object sender, ProgressEventArgs e)
-        //{
-        //    compressProgress = e.PercentDone;
-        //}
-
-        //private void extractCount(object sender, EventArgs e)
-        //{
-        //    extractCounter++;
-        //    OnPropertyChanged("progress");
-        //}
 
         public string fullPath
         {
@@ -141,52 +120,6 @@ namespace archiveExchanger
             }
         }
 
-        ////압축풀기
-        //public void extractFiles()
-        //{
-        //    foreach (var file in sze.ArchiveFileData.Where(file => !file.IsDirectory))
-        //    {
-        //        MemoryStream st = new MemoryStream();
-        //        sze.ExtractFile(file.FileName, st);
-        //        st.Position = 0;
-        //        stDic.Add(file.FileName, st);
-        //    }
-        //}
-        ////압축하기
-        //public void compressFiles()
-        //{
-        //    //출력할 포멧
-        //    if (destExt == "ZIP")
-        //        szc.ArchiveFormat = OutArchiveFormat.Zip;
-        //    else if (destExt == "7z")
-        //        szc.ArchiveFormat = OutArchiveFormat.SevenZip;
-
-        //    //딕셔너리 파일에서 전체를 압축하므로 의미가 없다.
-
-        //    ////파일이 존재하면 압축 시작중이라는 이야기이므로 compress모드를 바꿈.
-        //    //if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
-        //    //    szc.CompressionMode = CompressionMode.Append;
-        //    //else
-        //    //    szc.CompressionMode = CompressionMode.Create;
-
-        //    //압축 시작
-        //    szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
-        //}
-
-        ////전체
-        //public void convertStart()
-        //{
-        //    //압축풀기
-        //    extractFiles();
-        //    //압축하기 전에 파일이 있으면 삭제
-        //    if (File.Exists(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower())))
-        //    {
-        //        File.Delete(fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
-        //    }
-        //    //압축하기
-        //    compressFiles();
-        //}
-
         protected virtual void OnPropertyChanged(string name)
         {
             if (string.IsNullOrEmpty(name) == true)
@@ -202,6 +135,17 @@ namespace archiveExchanger
 
         }
 
+        public void workingStart()
+        {
+            zipManager zm = new zipManager();
+            zm.extracting += new zipManager.extractingEventHandler(extractProg);
+            zm.extractFiles(fullPath);
+        }
+
+        private void extractProg(object sender, EventExtractArgs e)
+        {
+                progress = e._extractProg;
+        }
         //파일 소스의 전체 경로가 같으면 같은 것으로 본다.
         public bool Equals(fileListData other)
         {
@@ -210,17 +154,5 @@ namespace archiveExchanger
 
             return false;
         }
-
-        
-
-
-        ////파일 소스의 전체 경로가 같으면 같은 것으로 본다.
-        //public bool Equals(string fullName)
-        //{
-        //    if (fi.FullName == Path.GetFullPath(fullName))
-        //        return true;
-
-        //    return false;
-        //}
     }
 }

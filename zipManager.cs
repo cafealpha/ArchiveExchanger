@@ -92,9 +92,9 @@ namespace archiveExchanger
         }
 
         //압축풀기
-        public void extractFiles(fileListData file)
+        public void extractFiles(string path)
         {
-            origFilename = file.fullPath;
+            origFilename = path;
 
             sze = new SevenZipExtractor(origFilename);
             sze.ExtractionFinished += ExtractFinished;
@@ -106,17 +106,17 @@ namespace archiveExchanger
             
             foreach (var item in items)
             {
-                if(item.Size < 5000)
-                {
+                //if(item.Size < 5000)
+                //{
                     MemoryStream st = new MemoryStream();
                     sze.ExtractFile(item.FileName, st);
                     st.Position = 0;
                     stDic.Add(item.FileName, st);
-                }
-                else
-                {
-                    FileStream fs = new FileStream()
-                }
+                //}
+                //else
+                //{
+                //    FileStream fs = new FileStream()
+                //}
 
                 
             }

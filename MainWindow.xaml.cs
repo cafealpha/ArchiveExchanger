@@ -272,28 +272,12 @@ namespace archiveExchanger
 
         private void btnConvertStart_Click(object sender, RoutedEventArgs e)
         {
-            //Thread t1 = new Thread(() => Items[0].convertStart());
-            //t1.Start();
-
             ThreadPool.QueueUserWorkItem(startConvert, Items[0]);
         }
+
         private void startConvert(object obj)
         {
-            fileListData item = obj as fileListData;
-            zipManager zm = new zipManager();
-            item.progress = 30;
-            zm.extracting += new zipManager.extractingEventHandler(extractProg);
-            zm.extractFiles(item);
-        }
-
-        private void extractProg(object sender, EventExtractArgs e)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-            {
-                tbDebugBox.Text = e._filename + " : " + e._extractProg; 
-
-                (Items.Where(item => item.fullPath == e._filename).First()).progress = e._extractProg; 
-            }));
+            (obj as fileListData).workingStart();
         }
     }
 }
