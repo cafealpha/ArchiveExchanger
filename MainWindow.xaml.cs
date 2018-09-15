@@ -201,22 +201,28 @@ namespace archiveExchanger
         {
             //분할 예정
 
-                foreach (var file in files)
+            foreach (var file in files)
+            {
+                //현재 지정되어있는 타겟압축파일과 같으면 넣지 않음.
+                if (System.IO.Path.GetExtension(file).ToLower().Replace(".", "") == destExt.ToLower()) continue;
+
+                var tf = new fileListData(file, destExt);
+                if (Items.Contains(tf))
+                    continue;
+
+                if(file.Contains(".part"))
                 {
-                    //현재 지정되어있는 타겟압축파일과 같으면 넣지 않음.
-                    if (System.IO.Path.GetExtension(file).ToLower().Replace(".", "") == destExt.ToLower()) continue;
-
-                    var tf = new fileListData(file, destExt);
-                    if (Items.Contains(tf))
-                        continue;
-
-                    Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                    {
-                        Items.Add(tf);
-                    }));
-
-                    Thread.Sleep(1);
+                    if (!file.Contains(".part1")) continue;
                 }
+
+
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                {
+                    Items.Add(tf);
+                }));
+
+                Thread.Sleep(1);
+            }
 
         }
 
@@ -272,7 +278,10 @@ namespace archiveExchanger
 
         private void btnConvertStart_Click(object sender, RoutedEventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(startConvert, Items[0]);
+            foreach(var item in Items)
+            {
+                ThreadPool.QueueUserWorkItem(startConvert, item);
+            }
         }
 
         private void startConvert(object obj)

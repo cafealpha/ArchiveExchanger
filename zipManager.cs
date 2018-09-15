@@ -13,12 +13,12 @@ namespace archiveExchanger
     public class EventCompressArgs : EventArgs
     {
         //압축 진행상황
-        public int _compressProg;
-        public string _filename;
-        public EventCompressArgs(int data, string filename)
+        public int compressProg;
+        public string filename;
+        public EventCompressArgs(int data, string _filename)
         {
-            _compressProg = data;
-            _filename = filename;
+            compressProg = data;
+            filename = _filename;
         }
     }
 
@@ -26,12 +26,12 @@ namespace archiveExchanger
     {
         //압축 해제 진행상황 
         //압축 진행상황
-        public int _extractProg;
-        public string _filename;
-        public EventExtractArgs(int data, string filename)
+        public int extractProg;
+        public string filename;
+        public EventExtractArgs(int data, string _filename)
         {
-            _extractProg = data;
-            _filename = filename;
+            extractProg = data;
+            filename = _filename;
         }
     }
 

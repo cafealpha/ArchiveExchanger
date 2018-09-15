@@ -16,14 +16,6 @@ namespace archiveExchanger
         //파일 정보 클래스
         public FileInfo fi;
         
-        //압축파일 총 파일 개수
-        private int totalFileCount;
-        //카운터
-
-        //압축 해제 카운터
-        private int extractCounter;
-        private int compressProgress;
-
         //작업 완료 플래그
         private bool _workDone;
         public bool workDone
@@ -73,8 +65,6 @@ namespace archiveExchanger
             
             destExt = ext;
 
-            extractCounter = 0;
-
             _destFormat.Add("ZIP");
             _destFormat.Add("7z");
             OnPropertyChanged("destFileName");
@@ -98,6 +88,11 @@ namespace archiveExchanger
         {
             get
             {
+                if(fi.Name.Contains(".part1"))
+                {
+                    return Path.GetFileNameWithoutExtension(fi.Name).Replace(".part1","") + "." + destExt.ToLower();
+                }
+
                 return Path.GetFileNameWithoutExtension(fi.Name) + "." + destExt.ToLower();
             }
         }
@@ -144,7 +139,7 @@ namespace archiveExchanger
 
         private void extractProg(object sender, EventExtractArgs e)
         {
-                progress = e._extractProg;
+                progress = e.extractProg;
         }
         //파일 소스의 전체 경로가 같으면 같은 것으로 본다.
         public bool Equals(fileListData other)
