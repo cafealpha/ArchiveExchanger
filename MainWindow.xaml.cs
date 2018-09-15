@@ -280,8 +280,22 @@ namespace archiveExchanger
         private void startConvert(object obj)
         {
             fileListData item = obj as fileListData;
-            item.convertStart();
+            zipManager zm = new zipManager();
+            zm.extracting += new zipManager.extractingEventHandler(extractProg);
+            zm.extractFiles(item);
         }
 
+        private void extractProg(object sender, EventExtractArgs e)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+            {
+                tbDebugBox.Text = e._filename + " : " + e._extractProg; 
+
+                var temp = Items.Where(item => item.fullPath == e._filename);
+                if (temp.Count() != 0)
+                    temp.First().progress = e._extractProg;
+
+            }));
+        }
     }
 }

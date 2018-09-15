@@ -52,16 +52,17 @@ namespace archiveExchanger
             }
         }
 
-        //private int _progress;
+        private int _progress;
         public int progress
         {
             get
             {
-                return (int)((extractCounter / (float)totalFileCount * 100) + compressProgress);
+                return _progress;        
+                //return (int)((extractCounter / (float)totalFileCount * 100) + compressProgress);
             }
             set
             {
-
+                _progress = value;
             }
         }
 
