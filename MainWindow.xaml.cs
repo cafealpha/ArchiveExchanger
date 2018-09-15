@@ -281,6 +281,7 @@ namespace archiveExchanger
         {
             fileListData item = obj as fileListData;
             zipManager zm = new zipManager();
+            item.progress = 30;
             zm.extracting += new zipManager.extractingEventHandler(extractProg);
             zm.extractFiles(item);
         }
@@ -291,10 +292,7 @@ namespace archiveExchanger
             {
                 tbDebugBox.Text = e._filename + " : " + e._extractProg; 
 
-                var temp = Items.Where(item => item.fullPath == e._filename);
-                if (temp.Count() != 0)
-                    temp.First().progress = e._extractProg;
-
+                (Items.Where(item => item.fullPath == e._filename).First()).progress = e._extractProg; 
             }));
         }
     }

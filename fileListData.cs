@@ -63,6 +63,7 @@ namespace archiveExchanger
             set
             {
                 _progress = value;
+                OnPropertyChanged("progress");
             }
         }
 

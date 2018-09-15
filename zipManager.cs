@@ -102,13 +102,26 @@ namespace archiveExchanger
             var items = sze.ArchiveFileData.Where(item => !item.IsDirectory);
             totalFileCount = items.Count();
 
+            //if (sze.ArchiveFileData.Sum(t => (int)t.Size) < 50000000)
+            
             foreach (var item in items)
             {
-                MemoryStream st = new MemoryStream();
-                sze.ExtractFile(item.FileName, st);
-                st.Position = 0;
-                stDic.Add(item.FileName, st);
+                if(item.Size < 5000)
+                {
+                    MemoryStream st = new MemoryStream();
+                    sze.ExtractFile(item.FileName, st);
+                    st.Position = 0;
+                    stDic.Add(item.FileName, st);
+                }
+                else
+                {
+                    FileStream fs = new FileStream()
+                }
+
+                
             }
+            
+
         }
 
         private void ExtractFinished(object sender, EventArgs e)
