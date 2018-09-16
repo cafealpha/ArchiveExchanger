@@ -44,19 +44,47 @@ namespace archiveExchanger
             }
         }
 
-        private int _progress;
         public int progress
         {
             get
             {
-                return _progress;        
+                return (_extractPrograss + _compressPrograss) / 2;
             }
             set
             {
-                _progress = value;
+
+            }
+        }
+
+        private int _extractPrograss;
+        public int extractPrograss
+        {
+            get
+            {
+                return _extractPrograss;
+            }
+            set
+            {
+                _extractPrograss = value;
                 OnPropertyChanged("progress");
             }
         }
+
+        private int _compressPrograss;
+        public int compressPrograss
+        {
+            get
+            {
+                return _compressPrograss;
+            }
+            set
+            {
+                _compressPrograss = value;
+                OnPropertyChanged("progress");
+            }
+        }
+
+
 
         public fileListData(string name, string ext)
         {
@@ -133,13 +161,22 @@ namespace archiveExchanger
         public void workingStart()
         {
             zipManager zm = new zipManager(fullPath);
+            //이벤트 핸들러 등록
             zm.extracting += new zipManager.extractingEventHandler(extractProg);
+            zm.compressing += new zipManager.compressingEventHandler(compressProg);
+
             zm.extractFiles(fullPath);
+            
+        }
+
+        private void compressProg(object sender, EventCompressArgs e)
+        {
+            compressPrograss = e.compressProg;
         }
 
         private void extractProg(object sender, EventExtractArgs e)
         {
-                progress = e.extractProg;
+            extractPrograss = e.extractProg;
         }
         //파일 소스의 전체 경로가 같으면 같은 것으로 본다.
         public bool Equals(fileListData other)
