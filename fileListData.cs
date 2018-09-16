@@ -116,12 +116,8 @@ namespace archiveExchanger
         {
             get
             {
-                if(fi.Name.Contains(".part1"))
-                {
-                    return Path.GetFileNameWithoutExtension(fi.Name).Replace(".part1","") + "." + destExt.ToLower();
-                }
-
-                return Path.GetFileNameWithoutExtension(fi.Name) + "." + destExt.ToLower();
+                return Path.GetFileNameWithoutExtension(fi.Name).Replace(".part1","") + "." + destExt.ToLower();
+//                return Path.GetFileNameWithoutExtension(fi.Name) + "." + destExt.ToLower();
             }
         }
 
@@ -166,6 +162,8 @@ namespace archiveExchanger
             zm.compressing += new zipManager.compressingEventHandler(compressProg);
 
             zm.extractFiles(fullPath);
+
+            zm.compressFiles(destExt);
             
         }
 

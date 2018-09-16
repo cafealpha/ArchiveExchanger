@@ -14,11 +14,9 @@ namespace archiveExchanger
     {
         //압축 진행상황
         public int compressProg;
-        public string filename;
-        public EventCompressArgs(int data, string _filename)
+        public EventCompressArgs(int data)
         {
             compressProg = data;
-            filename = _filename;
         }
     }
 
@@ -47,7 +45,6 @@ namespace archiveExchanger
         //public string filename;
 
         FileInfo fi;
-
         //압축 해제 기능
         SevenZipExtractor sze;
         //압축기능
@@ -62,21 +59,9 @@ namespace archiveExchanger
         public int totalFileCount;
         //압축해제한 파일 개수
         public int extractFileCount;
+        //압축한 파일 개수
+        public int compressFileCount;
 
-        public int _compressProg;
-
-        string _destExt;
-        public string destExt
-        {
-            get
-            {
-                return _destExt;
-            }
-            set
-            {
-                _destExt = value;
-            }
-        }
 
         public zipManager(string filename)
         {
@@ -91,8 +76,8 @@ namespace archiveExchanger
             stDic.Clear();
             totalFileCount = 0;
             extractFileCount = 0;
+            compressFileCount = 0;
             origFilename = "";
-            //filename = "";
         }
 
         //압축풀기
@@ -146,8 +131,7 @@ namespace archiveExchanger
         public void compressFiles(string format)
         {
             szc = new SevenZipCompressor();
-            szc.Compressing += compressingProg;
-
+            szc.FileCompressionFinished += compressingProg;
             //출력할 포멧
             if (format.ToLower() == "zip")
                 szc.ArchiveFormat = OutArchiveFormat.Zip;
@@ -157,16 +141,38 @@ namespace archiveExchanger
             {
                 return;
             }
-            FileInfo fi = new FileInfo(origFilename);
-
-            szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + destExt.ToLower()));
+            //확실하게 파일 닫을 수 있도록
+            //using (FileStream fs = new FileStream(fi.FullName.Replace(".part1", "").Replace(fi.Extension, "." + format.ToLower()), FileMode.OpenOrCreate))
+            //{
+            //    szc.CompressStreamDictionary(stDic, fs);
+            //    //szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + format.ToLower()));
+            //}
+            szc.CompressStreamDictionary(stDic, fi.FullName.Replace(fi.Extension, "." + format.ToLower()));
+            //후처리
+            if (sze.ArchiveFileData.Sum(t => (int)t.Size) > 100000000)
+            {
+                foreach (FileStream fs in stDic.Values)
+                {
+                    string temp = fs.Name;
+                    fs.Close();
+                    File.Delete(temp);
+                }
+            }
+            stDic.Clear();
         }
 
-        private void compressingProg(object sender, ProgressEventArgs e)
+        private void compressingProg(object sender, EventArgs e)
         {
-            //compressing(this, new EventCompressArgs { compressProg = e.PercentDelta });
-
-            //compressProg = e.PercentDelta;
+            compressFileCount++;
+            compressing(this, new EventCompressArgs(
+                (int)((compressFileCount / (float)totalFileCount) * 100)
+                ));
         }
+
+
+        //private void compressingProg(object sender, ProgressEventArgs e)
+        //{
+        //    compressing(this, new EventCompressArgs(e.PercentDone));
+        //}
     }
 }
