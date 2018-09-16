@@ -199,22 +199,21 @@ namespace archiveExchanger
         //Items에 중복확인하고 아이템 삽입해주는 메소드
         private void insertFiles(IEnumerable<string> files)
         {
-            //분할 예정
-
             foreach (var file in files)
             {
                 //현재 지정되어있는 타겟압축파일과 같으면 넣지 않음.
                 if (System.IO.Path.GetExtension(file).ToLower().Replace(".", "") == destExt.ToLower()) continue;
 
-                var tf = new fileListData(file, destExt);
-                if (Items.Contains(tf))
-                    continue;
-
-                if(file.Contains(".part"))
+                //파일 이름에 part가 붙어있는 경우 rar 분할 파일임.분할 파일은 첫번째 파일만 리스팅한다.
+                if (file.Contains(".part"))
                 {
                     if (!file.Contains(".part1")) continue;
                 }
 
+                //리스트에 중복된 파일이 있을 경우 넣지 않는다.
+                var tf = new fileListData(file, destExt);
+                if (Items.Contains(tf))
+                    continue;
 
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
@@ -230,7 +229,6 @@ namespace archiveExchanger
         {
             //콤보박스에서 선택된 아이템의 이름
             string selectedItemName = (e.AddedItems[0] as ComboBoxItem).Content as string;
-
 
             Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {

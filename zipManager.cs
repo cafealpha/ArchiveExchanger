@@ -44,7 +44,9 @@ namespace archiveExchanger
         public event extractingEventHandler extracting;
         public event compressingEventHandler compressing;
         
-        public string filename;
+        //public string filename;
+
+        FileInfo fi;
 
         //압축 해제 기능
         SevenZipExtractor sze;
@@ -76,10 +78,12 @@ namespace archiveExchanger
             }
         }
 
-        public zipManager()
+        public zipManager(string filename)
         {
             SevenZipBase.SetLibraryPath(Directory.GetCurrentDirectory() + @"\7z.dll");
             init();
+
+            fi = new FileInfo(filename);
         }
 
         public void init()
@@ -88,40 +92,47 @@ namespace archiveExchanger
             totalFileCount = 0;
             extractFileCount = 0;
             origFilename = "";
-            filename = "";
+            //filename = "";
         }
 
         //압축풀기
         public void extractFiles(string path)
         {
-            origFilename = path;
-
-            sze = new SevenZipExtractor(origFilename);
+            sze = new SevenZipExtractor(fi.FullName);
             sze.ExtractionFinished += ExtractFinished;
             //압축풀 총 파일 개수
             var items = sze.ArchiveFileData.Where(item => !item.IsDirectory);
             totalFileCount = items.Count();
 
-            //if (sze.ArchiveFileData.Sum(t => (int)t.Size) < 50000000)
-            
-            foreach (var item in items)
+            if (sze.ArchiveFileData.Sum(t => (int)t.Size) < 100000000)
             {
-                //if(item.Size < 5000)
-                //{
+                foreach (var item in items)
+                {
                     MemoryStream st = new MemoryStream();
                     sze.ExtractFile(item.FileName, st);
                     st.Position = 0;
                     stDic.Add(item.FileName, st);
-                //}
-                //else
-                //{
-                //    FileStream fs = new FileStream()
-                //}
-
-                
+                }
             }
-            
+            else
+            {
+                foreach (var item in items)
+                {
+                    FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate);
+                    sze.ExtractFile(item.FileName, fs);
+                    fs.Position = 0;
+                    stDic.Add(item.FileName, fs);
+                }
 
+                //후처리
+                //foreach(FileStream fs in stDic.Values)
+                //{
+                //    string temp = fs.Name;
+                //    fs.Close();
+                //    File.Delete(temp);
+                //}
+                //stDic.Clear();
+            }
         }
 
         private void ExtractFinished(object sender, EventArgs e)

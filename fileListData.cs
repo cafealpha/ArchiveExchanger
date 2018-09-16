@@ -132,7 +132,7 @@ namespace archiveExchanger
 
         public void workingStart()
         {
-            zipManager zm = new zipManager();
+            zipManager zm = new zipManager(fullPath);
             zm.extracting += new zipManager.extractingEventHandler(extractProg);
             zm.extractFiles(fullPath);
         }
